@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RGB Styled Calendar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: rgb(230, 183, 255); /* Your custom background */
+      color: rgb(255, 255, 255);
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    #controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      padding: 20px;
+    }
+
+    select, button {
+      padding: 8px;
+      font-size: 16px;
+      margin: 5px;
+      border-radius: 5px;
+    }
+
+    #calendar {
+      max-width: 900px;
+      margin: 0 auto;
+      background-color: rgb(79, 18, 140); /* Your custom calendar background */
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    .fc-daygrid-day {
+      background-color: rgb(230, 190, 229) !important; /* Your custom cell background */
+      border: 1px solid #888;
+      position: relative;
+    }
+
+    .fc-daygrid-day-number {
+      color: transparent;
+    }
+
+    .flower-number {
+      font-size: 18px;
+      color: rgb(0, 0, 0);
+      position: absolute;
+      top: 4px;
+      left: 4px;
+    }
+
+    /* Highlight today's date */
+    .fc-day-today {
+      background-color: rgba(255, 255, 0, 0.4) !important;
+      border: 2px solid #ff0;
+    }
+  </style>
+</head>
+<body>
+
+  <h1 style="color: #000000;">Colorful Calendar (2000–2060)</h1>
+
+  <div id="controls">
+    <label for="year" aria-label="Select Year">Year:</label>
+    <select id="year" aria-label="Year Selection"></select>
+
+    <label for="month" aria-label="Select Month">Month:</label>
+    <select id="month" aria-label="Month Selection">
+      <option value="0">January</option>
+      <option value="1">February</option>
+      <option value="2">March</option>
+      <option value="3">April</option>
+      <option value="4">May</option>
+      <option value="5">June</option>
+      <option value="6">July</option>
+      <option value="7">August</option>
+      <option value="8">September</option>
+      <option value="9">October</option>
+      <option value="10">November</option>
+      <option value="11">December</option>
+    </select>
+
+    <button onclick="goToDate()" aria-label="Go to selected date">Go</button>
+  </div>
+
+  <div id="calendar"></div>
+
+  <script>
+    let calendar;
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const calendarEl = document.getElementById('calendar');
+
+      calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        initialDate: '2025-07-01',
+        validRange: {
+          start: '2000-01-01',
+          end: '2060-12-31'
+        },
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth'
+        },
+
+        events: [
+          { title: '🌟 My Birthday', start: '2025-11-23' }
+        ],
+
+        dayCellContent: function (arg) {
+          const dayNum = arg.date.getDate();
+          const isWeekend = [0, 6].includes(arg.date.getDay());
+          const emoji = isWeekend ? '🌼' : '🌸';
+          return {
+            html: `<span class="flower-number">${emoji} ${dayNum}</span>`
+          };
+        }
+      });
+
+      calendar.render();
+
+      // Populate year dropdown
+      const yearSelect = document.getElementById("year");
+      for (let y = 2000; y <= 2060; y++) {
+        const option = document.createElement("option");
+        option.value = y;
+        option.text = y;
+        yearSelect.appendChild(option);
+      }
+
+      // Set current date as default
+      const today = new Date();
+      yearSelect.value = today.getFullYear();
+      document.getElementById("month").value = today.getMonth();
+    });
+
+    function goToDate() {
+      const year = document.getElementById("year").value;
+      const month = document.getElementById("month").value;
+      const dateStr = `${year}-${String(Number(month) + 1).padStart(2, '0')}-01`;
+      calendar.gotoDate(dateStr);
+    }
+  </script>
+</body>
+</html>
